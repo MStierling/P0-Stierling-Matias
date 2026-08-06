@@ -1,4 +1,4 @@
-# P0-Stierling-Matis
+# P0-Stierling-Matias
 
 ## Proposito general del proyecto
 
