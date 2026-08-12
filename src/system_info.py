@@ -16,6 +16,7 @@ RUTA_DATA = RUTA_PROYECTO / "data"
 
 
 def obtener_gpu():
+    # Aqui se intenta obtener la informacion de las GPU en Windows.
     if platform.system() == "Windows":
         try:
             salida = subprocess.run(
@@ -33,6 +34,7 @@ def obtener_gpu():
 
 
 def obtener_procesador():
+    # Aqui se intenta obtener el modelo exacto del procesador en Windows.
     if platform.system() == "Windows":
         try:
             salida = subprocess.run(
@@ -50,6 +52,7 @@ def obtener_procesador():
 
 
 def obtener_informacion():
+    # Aqui se junta la informacion principal del computador en un diccionario.
     info = {
         "sistema_operativo": platform.system(),
         "sistema_operativo_detalle": platform.platform(),
@@ -62,6 +65,7 @@ def obtener_informacion():
         "memoria_ram_total_bytes": None,
         "fecha_captura": datetime.now(timezone.utc).isoformat(),
     }
+    # Aqui se agregan nucleos y RAM usando psutil cuando esta disponible.
     if HAS_PSUTIL:
         info["nucleos_fisicos"] = psutil.cpu_count(logical=False)
         info["procesadores_logicos"] = psutil.cpu_count(logical=True)
@@ -72,6 +76,7 @@ def obtener_informacion():
 
 
 def guardar_informacion(info):
+    # Aqui se guarda la informacion del computador en data/system_info.json.
     RUTA_DATA.mkdir(exist_ok=True)
     archivo = RUTA_DATA / "system_info.json"
     archivo.write_text(
@@ -81,6 +86,7 @@ def guardar_informacion(info):
 
 
 def main():
+    # Aqui se obtiene, guarda e imprime la informacion del computador.
     info = obtener_informacion()
     archivo = guardar_informacion(info)
     print(json.dumps(info, indent=4, ensure_ascii=False))

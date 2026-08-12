@@ -37,11 +37,14 @@ METODOS = [
 
 
 def medir(metodo, n):
+    # Aqui se crean matrices aleatorias float64 de tamano n x n.
     A = RNG.random((n, n))
     B = RNG.random((n, n))
+    # Aqui se hace el calentamiento antes de medir tiempos.
     metodo(A, B)
     tiempos = []
     for _ in range(REPETICIONES):
+        # Aqui se mide el tiempo de una repeticion con perf_counter.
         t0 = time.perf_counter()
         metodo(A, B)
         t1 = time.perf_counter()
@@ -50,28 +53,34 @@ def medir(metodo, n):
 
 
 def monitorear_recurso(muestras, parar):
+    # Aqui se prepara la medicion de CPU y RAM del proceso.
     proc = psutil.Process()
     proc.cpu_percent(interval=None)
     while not parar.is_set():
+        # Aqui se guarda una muestra de CPU y RAM mientras corre el benchmark.
         muestras.append((proc.cpu_percent(interval=None), proc.memory_info().rss))
         parar.wait(0.05)
 
 
 def graficar(resultados):
+    # Aqui se agrupan los tiempos por metodo y tamano de matriz.
     medias = defaultdict(list)
     for metodo, n, rep, tiempo in resultados:
         medias[(metodo, n)].append(tiempo)
 
     plt.figure(figsize=(8, 5))
     for nombre, _ in METODOS:
+        # Aqui se calcula el promedio de tiempo para cada tamano.
         tamanos = []
         tiempos_medios = []
         for n in TAMANOS:
             valores = medias[(nombre, n)]
             tamanos.append(n)
             tiempos_medios.append(sum(valores) / len(valores))
+        # Aqui se dibuja la linea principal del metodo.
         plt.plot(tamanos, tiempos_medios, marker="o", label=nombre)
         repeticiones = [(n, t) for m, n, _, t in resultados if m == nombre]
+        # Aqui se dibujan los puntos de cada repeticion medida.
         plt.scatter(
             [n for n, _ in repeticiones],
             [t for _, t in repeticiones],
@@ -84,17 +93,20 @@ def graficar(resultados):
     plt.yscale("log")
     plt.legend()
     plt.grid(True, which="both", linestyle="--", alpha=0.5)
+    # Aqui se guarda el grafico final en figures/benchmark.png.
     plt.savefig(ARCHIVO_GRAFICO, dpi=150)
     plt.close()
 
 
 def main():
+    # Aqui se crean las carpetas data y figures si no existen.
     RUTA_DATA.mkdir(exist_ok=True)
     RUTA_FIGURES.mkdir(exist_ok=True)
 
     resultados = []
     muestras = []
     parar = threading.Event()
+    # Aqui se inicia el monitoreo de CPU y RAM en paralelo.
     hilo = threading.Thread(
         target=monitorear_recurso, args=(muestras, parar), daemon=True
     )
@@ -103,12 +115,14 @@ def main():
     for nombre, metodo in METODOS:
         for n in TAMANOS:
             print(f"Midiendo {nombre} con n={n} ...")
+            # Aqui se ejecutan las repeticiones del metodo y tamano actual.
             for rep, tiempo in enumerate(medir(metodo, n), start=1):
                 resultados.append([nombre, n, rep, tiempo])
 
     parar.set()
     hilo.join(timeout=1)
 
+    # Aqui se guardan todas las mediciones en el archivo CSV.
     with open(ARCHIVO_CSV, "w", newline="", encoding="utf-8") as f:
         escritor = csv.writer(f)
         escritor.writerow(["metodo", "tamanio", "repeticion", "tiempo_s"])
@@ -127,6 +141,7 @@ def main():
     print(f"\nCPU maxima del proceso: {cpu_max:.1f} %")
     print(f"RAM maxima del proceso: {ram_max / 2**30:.3f} GiB")
 
+    # Aqui se manda a graficar con los resultados medidos.
     graficar(resultados)
 
     print(f"\nDatos guardados en: {ARCHIVO_CSV}")
