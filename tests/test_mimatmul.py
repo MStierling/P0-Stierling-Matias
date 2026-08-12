@@ -29,3 +29,23 @@ def test_dimensiones_incompatibles():
     B = [[1, 2, 3]]
     with pytest.raises(ValueError):
         mimatmul(A, B)
+
+
+def test_consistencia_con_numpy_cuadradas():
+    np = pytest.importorskip("numpy")
+    rng = np.random.default_rng(7)
+    for n in range(2, 6):
+        A = rng.integers(0, 10, size=(n, n)).tolist()
+        B = rng.integers(0, 10, size=(n, n)).tolist()
+        esperado = (np.array(A) @ np.array(B)).tolist()
+        assert mimatmul(A, B) == esperado
+
+
+def test_consistencia_con_numpy_rectangulares():
+    np = pytest.importorskip("numpy")
+    rng = np.random.default_rng(11)
+    for filas_a, col_a, col_b in [(3, 4, 2), (4, 2, 5), (1, 3, 1)]:
+        A = rng.integers(0, 10, size=(filas_a, col_a)).tolist()
+        B = rng.integers(0, 10, size=(col_a, col_b)).tolist()
+        esperado = (np.array(A) @ np.array(B)).tolist()
+        assert mimatmul(A, B) == esperado
