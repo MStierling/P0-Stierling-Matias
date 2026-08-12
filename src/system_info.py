@@ -15,6 +15,23 @@ RUTA_PROYECTO = Path(__file__).resolve().parent.parent
 RUTA_DATA = RUTA_PROYECTO / "data"
 
 
+def obtener_gpu():
+    if platform.system() == "Windows":
+        try:
+            salida = subprocess.run(
+                [
+                    "powershell", "-NoProfile", "-Command",
+                    "(Get-CimInstance Win32_VideoController).Name",
+                ],
+                capture_output=True, text=True, timeout=15, check=True,
+            ).stdout.strip()
+            if salida:
+                return [linea for linea in salida.splitlines() if linea]
+        except Exception:
+            pass
+    return []
+
+
 def obtener_procesador():
     if platform.system() == "Windows":
         try:
@@ -39,6 +56,7 @@ def obtener_informacion():
         "arquitectura": platform.machine(),
         "version_python": platform.python_version(),
         "procesador": obtener_procesador(),
+        "gpu": obtener_gpu(),
         "nucleos_fisicos": None,
         "procesadores_logicos": None,
         "memoria_ram_total_bytes": None,
