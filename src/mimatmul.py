@@ -1,11 +1,16 @@
 def mimatmul(A, B):
-    if not A or not B:
+    if not A or not B or not A[0] or not B[0]:
         raise ValueError("Las matrices no pueden estar vacias")
 
     filas_a = len(A)
     columnas_a = len(A[0])
     filas_b = len(B)
     columnas_b = len(B[0])
+
+    if any(len(fila) != columnas_a for fila in A) or any(
+        len(fila) != columnas_b for fila in B
+    ):
+        raise ValueError("Todas las filas de cada matriz deben tener el mismo largo")
 
     if columnas_a != filas_b:
         raise ValueError(

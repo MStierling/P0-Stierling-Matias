@@ -115,10 +115,10 @@ Mediciones reales realizadas en este computador. Cada tiempo es el promedio de
 
 | Tamaño (n×n) | mimatmul (s) | NumPy `A @ B` (s) | Cuánto más lento |
 |---|---|---|---|
-| 16 | 0.000173 | 0.000002 | ~87× |
-| 32 | 0.001203 | 0.000003 | ~400× |
-| 64 | 0.009911 | 0.000012 | ~830× |
-| 128 | 0.085819 | 0.000229 | ~375× |
+| 16 | 0.000168 | 0.000005 | ~35× |
+| 32 | 0.001232 | 0.000007 | ~180× |
+| 64 | 0.009795 | 0.000012 | ~788× |
+| 128 | 0.080756 | 0.000272 | ~297× |
 
 Los datos completos (método, tamaño, repetición y tiempo medido) están en
 `data/benchmark_results.csv`. El gráfico generado está en
@@ -185,5 +185,5 @@ Los datos completos (método, tamaño, repetición y tiempo medido) están en
 
 - **P0E1 (entregado)**: ambiente configurado, información del computador e
   inicio de `mimatmul`.
-- **P0E2 (final)**: `mimatmul` completa, 6 pruebas que pasan, benchmark con
+- **P0E2 (final)**: `mimatmul` completa, 8 pruebas que pasan, benchmark con
   datos reales en CSV, gráfico final y documentación completa.

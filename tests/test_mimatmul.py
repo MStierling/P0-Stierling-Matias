@@ -31,6 +31,20 @@ def test_dimensiones_incompatibles():
         mimatmul(A, B)
 
 
+def test_matrices_vacias():
+    with pytest.raises(ValueError):
+        mimatmul([], [[1]])
+    with pytest.raises(ValueError):
+        mimatmul([[1]], [])
+    with pytest.raises(ValueError):
+        mimatmul([[]], [[]])
+
+
+def test_filas_irregulares():
+    with pytest.raises(ValueError):
+        mimatmul([[1, 2], [3]], [[1], [2]])
+
+
 def test_consistencia_con_numpy_cuadradas():
     np = pytest.importorskip("numpy")
     rng = np.random.default_rng(7)

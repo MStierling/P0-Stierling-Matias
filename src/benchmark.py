@@ -64,13 +64,13 @@ def graficar(resultados):
 
     plt.figure(figsize=(8, 5))
     for nombre, _ in METODOS:
-        tamaños = []
+        tamanos = []
         tiempos_medios = []
         for n in TAMANOS:
             valores = medias[(nombre, n)]
-            tamaños.append(n)
+            tamanos.append(n)
             tiempos_medios.append(sum(valores) / len(valores))
-        plt.plot(tamaños, tiempos_medios, marker="o", label=nombre)
+        plt.plot(tamanos, tiempos_medios, marker="o", label=nombre)
         repeticiones = [(n, t) for m, n, _, t in resultados if m == nombre]
         plt.scatter(
             [n for n, _ in repeticiones],
